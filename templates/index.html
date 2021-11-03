@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>Parameters</title>
+    <style>
+        body {
+            background-color: #eee;
+        }
+
+        tr td:first-child {
+            text-align: right;
+        }
+
+        textarea {
+            resize: none;
+        }
+    </style>
+    <script type="text/javascript">
+        function getXmlHttpRequest() {
+            let x;
+            try {
+                x = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                try {
+                    x = newActiveXObject("Microsoft.XMLHTTP");
+                } catch (E) {
+                    x = false;
+                }
+            }
+            if ((!x) && (typeof XMLHttpRequest != 'undefined')) {
+                x = new XMLHttpRequest();
+            }
+            return x;
+        }
+
+        function openUrl(u, m) {
+            let x = getXmlHttpRequest();
+            x.open(m, u, false);
+            x.send(null);
+            if (x.status !== 200) {
+                alert(x.responseText);
+                return false;
+            }
+            return true;
+        }
+
+        function checkInt(e, d, m, x) {
+            let n = parseInt(e.value);
+            if (isNaN(n)) {
+                n = d;
+            } else {
+                if (n < m) n = m;
+                if (n > x) n = x;
+            }
+            e.value = n.toString();
+        }
+
+        function checkFloat(e, d, m, x) {
+            let n = parseFloat(e.value);
+            if (isNaN(n)) {
+                n = d;
+            } else {
+                if ((!isNaN(m)) && (n < m)) n = m;
+                if ((!isNaN(x)) && (n > x)) n = x;
+            }
+            if (isNaN(n)) {
+                e.value = "";
+            } else {
+                e.value = n.toString();
+            }
+        }
+
+        function processTab(t, e) {
+            if (e.which === 9) {
+                let start = t.selectionStart;
+                let end = t.selectionEnd;
+                t.value = t.value.substr(0, start) + '	' + t.value.substr(end);
+                t.selectionStart = t.selectionEnd = start + 1;
+                e.preventDefault();
+                return false;
+            }
+        }
+    </script>
+</head>
+<body>
+<form action="" method="post">
+    <table cols="2">
+        <tbody>
+        <tr>
+            <td>WiFi SSID</td>
+            <td><input type="text" name="wifi_ssid" size="32" maxlength="32"></td>
+        </tr>
+        <tr>
+            <td>WiFi password</td>
+            <td><input type="password" name="wifi_pswd" size="32" maxlength="32" value=""></td>
+        </tr>
+        <tr>
+            <td>MQTT broker</td>
+            <td><input type="text" name="mqtt_server" size="32" maxlength="32"></td>
+        </tr>
+        <tr>
+            <td>MQTT port</td>
+            <td><input type="text" name="mqtt_port" size="5" maxlength="5" value="1883"
+                       onblur="checkInt(this,1883,0,65535);"></td>
+        </tr>
+        <tr>
+            <td>MQTT client</td>
+            <td><input type="text" name="mqtt_client" size="32" maxlength="32" value="ESP01_Relay"></td>
+        </tr>
+        <tr>
+            <td>MQTT user</td>
+            <td><input type="text" name="mqtt_user" size="32" maxlength="32"></td>
+        </tr>
+        <tr>
+            <td>MQTT password</td>
+            <td><input type="password" name="mqtt_pswd" size="32" maxlength="32" value=""></td>
+        </tr>
+        <tr>
+            <td>MQTT topic</td>
+            <td><input type="text" name="mqtt_topic" size="32" maxlength="32" value="/Relay"></td>
+        </tr>
+        <tr>
+            <td>MQTT retained</td>
+            <td><input type="checkbox" name="mqtt_retain" value="true"
+                       onchange="document.getElementsByName('mqtt_retain')[1].disabled=this.checked;"><input
+                    type="hidden" name="mqtt_retain" value="false"></td>
+        </tr>
+        <tr>
+            <td>Relay state on boot</td>
+            <td><input type="radio" name="boot_state" value="false" checked="checked">OFF
+                <input type="radio" name="boot_state" value="true">ON
+            </td>
+        </tr>
+        <tr>
+            <td><label for="persist">Persistent relay state</label></td>
+            <td><input id="persist" type="checkbox" name="persist" value="true"
+                       onchange="document.getElementsByName('persist')[1].disabled=this.checked;">
+                <input type="hidden"
+                       name="persist"
+                       value="false">
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p>
+        <input type="submit" value="Store">
+        <input type="button" value="Clear"
+               onclick="if(confirm('Are you sure to clear parameters?')){openUrl('/','delete');location.reload();}">
+        <input type="button" value="Restart!"
+               onclick="if(confirm('Are you sure to restart?')){location.href='/restart';}">
+    </p></form>
+
+<p>ESP01_Relay v2.0.0 by nm17</p>
+</body>
+</html>
