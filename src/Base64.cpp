@@ -18,7 +18,7 @@ static char encodeByte(uint8_t b) {
     return '+';
   if (b == 63)
     return '/';
-//  return '=';
+  return '=';
 }
 
 static uint8_t decodeByte(char c) {
@@ -32,7 +32,7 @@ static uint8_t decodeByte(char c) {
     return 62;
   if (c == '/')
     return 63;
-//  return 0;
+  return 0;
 }
 
 String encodeBase64(const uint8_t *data, uint16_t size) {

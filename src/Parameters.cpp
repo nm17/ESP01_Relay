@@ -125,6 +125,7 @@ paraminfo_t::paramtype_t Parameters::type(uint16_t index) const {
 #else
     return _params[index].type;
 #endif
+  throw std::exception();
 }
 
 uint16_t Parameters::size(uint16_t index) const {
